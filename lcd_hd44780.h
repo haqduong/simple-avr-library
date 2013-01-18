@@ -82,7 +82,7 @@ void lcd_put_char (char c);
 void lcd_put_uint8 (uint8_t d, uint8_t base);
 
 /*!
- * Put an uint8_t to LCD
+ * Put an uint16_t to LCD
  * \param[in] d number to put
  * \param[in] base base of number to display
  */

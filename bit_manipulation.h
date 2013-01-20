@@ -31,41 +31,41 @@
 #define BIT(x) (1 << (x))
 
 /*!
- * \def SETBITS(x, y)
+ * \def SET_BITS(x, y)
  * Set y-th bit in x to 1 if coressponding bit in y is 1
  */
-#define SETBITS(x,y) ((x) |= (y))
+#define SET_BITS(x,y) ((x) |= (y))
 
 /*!
- * \def CLEARBITS(x, y)
+ * \def CLEAR_BITS(x, y)
  * Set y-th bit in x to 0 if coressponding bit in y is 1
  */
-#define CLEARBITS(x,y) ((x) &= (~(y)))
+#define CLEAR_BITS(x,y) ((x) &= (~(y)))
 
-/*! \def SETBIT(x, y)
+/*! \def SET_BIT(x, y)
  * Set y-th bit in x to 1
  */
-#define SETBIT(x,y) SETBITS((x), (BIT((y))))
+#define SET_BIT(x,y) SET_BITS((x), (BIT((y))))
 
-/*! \def CLEARBIT(x, y)
+/*! \def CLEAR_BIT(x, y)
  * Set y-th bit in x to 0
  */
-#define CLEARBIT(x,y) CLEARBITS((x), (BIT((y))))
+#define CLEAR_BIT(x,y) CLEAR_BITS((x), (BIT((y))))
 
-/*! \def BITVAL(x, y)
+/*! \def BIT_VAL(x, y)
  * Get y-th bit of x
  */
-#define BITVAL(x,y) (((x) >> (y)) & 1)
+#define BIT_VAL(x,y) (((x) >> (y)) & 1)
 
 /*! \def FLIP_BIT(x, y)
  * Flip y-th bit of x
  */
-#define FLIP_BIT(x,y) (BITVAL((x),(y)) ? CLEARBIT((x),(y)) : SETBIT((x),(y)))
+#define FLIP_BIT(x,y) (BIT_VAL((x),(y)) ? CLEAR_BIT((x),(y)) : SET_BIT((x),(y)))
 
-/*! \def SETVAL(x, y, z)
+/*! \def SET_VAL(x, y, z)
  * Set y-th bit of x to z
  */
-#define SETVAL(x,y,z) ((z) ? SETBIT((x),(y)) : CLEARBIT((x),(y)))
+#define SET_VAL(x,y,z) ((z) ? SET_BIT((x),(y)) : CLEAR_BIT((x),(y)))
 
 
 #endif

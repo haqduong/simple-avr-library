@@ -45,21 +45,21 @@ void lcd_init () {
   _delay_ms (50);
 
   // set all data pin to output
-  SETBIT(LCD_DATA_DDR, LCD_DATA4_PIN);
-  SETBIT(LCD_DATA_DDR, LCD_DATA5_PIN);
-  SETBIT(LCD_DATA_DDR, LCD_DATA6_PIN);
-  SETBIT(LCD_DATA_DDR, LCD_DATA7_PIN);
+  SET_BIT(LCD_DATA_DDR, LCD_DATA4_PIN);
+  SET_BIT(LCD_DATA_DDR, LCD_DATA5_PIN);
+  SET_BIT(LCD_DATA_DDR, LCD_DATA6_PIN);
+  SET_BIT(LCD_DATA_DDR, LCD_DATA7_PIN);
 
   // set all control pin to output
-  SETBIT(LCD_CTL_DDR, LCD_RS_PIN);
-  SETBIT(LCD_CTL_DDR, LCD_RW_PIN);
-  SETBIT(LCD_CTL_DDR, LCD_E_PIN);
+  SET_BIT(LCD_CTL_DDR, LCD_RS_PIN);
+  SET_BIT(LCD_CTL_DDR, LCD_RW_PIN);
+  SET_BIT(LCD_CTL_DDR, LCD_E_PIN);
 
   clear_all_pin ();
 
   // function set
-  SETBIT(LCD_DATA_PORT, LCD_DATA5_PIN);
-  SETBIT(LCD_DATA_PORT, LCD_DATA4_PIN);
+  SET_BIT(LCD_DATA_PORT, LCD_DATA5_PIN);
+  SET_BIT(LCD_DATA_PORT, LCD_DATA4_PIN);
   toggle_e_pin ();
   _delay_ms (5);
   toggle_e_pin ();
@@ -67,21 +67,21 @@ void lcd_init () {
   toggle_e_pin ();
   _delay_ms (10);
   // set to 4-bit interface
-  CLEARBIT(LCD_DATA_PORT, LCD_DATA4_PIN);
+  CLEAR_BIT(LCD_DATA_PORT, LCD_DATA4_PIN);
   toggle_e_pin ();
   _delay_ms (1);
 
   // set number of display line (N) and charactor font (F)
   toggle_e_pin ();
-  SETBIT(LCD_DATA_PORT, LCD_DATA7_PIN);
+  SET_BIT(LCD_DATA_PORT, LCD_DATA7_PIN);
   toggle_e_pin ();
   _delay_ms (1);
 
   // display on/off control
   clear_all_pin ();
   toggle_e_pin ();
-  SETBIT (LCD_DATA_PORT, LCD_DATA7_PIN);
-  SETBIT (LCD_DATA_PORT, LCD_DATA6_PIN);
+  SET_BIT (LCD_DATA_PORT, LCD_DATA7_PIN);
+  SET_BIT (LCD_DATA_PORT, LCD_DATA6_PIN);
   toggle_e_pin ();
 
   lcd_wait_busy ();
@@ -91,8 +91,8 @@ void lcd_init () {
   // entry mode set
   clear_all_pin ();
   toggle_e_pin ();
-  SETBIT (LCD_DATA_PORT, LCD_DATA6_PIN);
-  SETBIT (LCD_DATA_PORT, LCD_DATA5_PIN);
+  SET_BIT (LCD_DATA_PORT, LCD_DATA6_PIN);
+  SET_BIT (LCD_DATA_PORT, LCD_DATA5_PIN);
   toggle_e_pin ();
 }
 
@@ -117,17 +117,17 @@ void lcd_view_move (uint8_t dir) {
 // wait while LCD is busy and return address
 uint8_t lcd_wait_busy () {
   // set control port to read busy flag and address
-  CLEARBIT (LCD_CTL_PORT, LCD_RS_PIN);
-  SETBIT (LCD_CTL_PORT, LCD_RW_PIN);
+  CLEAR_BIT (LCD_CTL_PORT, LCD_RS_PIN);
+  SET_BIT (LCD_CTL_PORT, LCD_RW_PIN);
   _delay_us (1);
 
   uint8_t data = BIT (7);
-  while (BITVAL (data, 7) == 1) {
+  while (BIT_VAL (data, 7) == 1) {
     data = read_data ();
     _delay_us (1);
   }
 
-  SETBIT (LCD_DATA_DDR, LCD_DATA7_PIN); // turn DB7 to output
+  SET_BIT (LCD_DATA_DDR, LCD_DATA7_PIN); // turn DB7 to output
   clear_all_ctl_pin ();
 
   return data;
@@ -135,7 +135,7 @@ uint8_t lcd_wait_busy () {
 
 void lcd_put_char (char c) {
   clear_all_pin ();
-  SETBIT (LCD_CTL_PORT, LCD_RS_PIN);
+  SET_BIT (LCD_CTL_PORT, LCD_RS_PIN);
 
   send_data (c);
 
@@ -167,7 +167,7 @@ void lcd_put_uint16 (uint16_t d) {
 void lcd_return_home () {
   clear_all_pin ();
   toggle_e_pin ();
-  SETBIT (LCD_DATA_PORT, LCD_DATA5_PIN);
+  SET_BIT (LCD_DATA_PORT, LCD_DATA5_PIN);
   toggle_e_pin ();
   lcd_wait_busy ();
 }
@@ -176,7 +176,7 @@ void lcd_return_home () {
 void lcd_clrscr () {
   clear_all_pin ();
   toggle_e_pin ();
-  SETBIT (LCD_DATA_PORT, LCD_DATA4_PIN);
+  SET_BIT (LCD_DATA_PORT, LCD_DATA4_PIN);
   toggle_e_pin ();
   lcd_wait_busy ();
 }
@@ -190,7 +190,7 @@ void lcd_goto_xy (uint8_t x, uint8_t y) {
     addr = 0x40 + x;
   }
   clear_all_pin ();
-  SETBIT (LCD_DATA_PORT, LCD_DATA7_PIN);
+  SET_BIT (LCD_DATA_PORT, LCD_DATA7_PIN);
   send_data (addr | 0x80);
   lcd_wait_busy ();
 }
@@ -201,18 +201,18 @@ void send_data (uint8_t data) {
 
   // send upper bit
   part = data >> 4;
-  SETVAL (LCD_DATA_PORT, LCD_DATA7_PIN, BITVAL(part, 3));
-  SETVAL (LCD_DATA_PORT, LCD_DATA6_PIN, BITVAL(part, 2));
-  SETVAL (LCD_DATA_PORT, LCD_DATA5_PIN, BITVAL(part, 1));
-  SETVAL (LCD_DATA_PORT, LCD_DATA4_PIN, BITVAL(part, 0));
+  SET_VAL (LCD_DATA_PORT, LCD_DATA7_PIN, BIT_VAL(part, 3));
+  SET_VAL (LCD_DATA_PORT, LCD_DATA6_PIN, BIT_VAL(part, 2));
+  SET_VAL (LCD_DATA_PORT, LCD_DATA5_PIN, BIT_VAL(part, 1));
+  SET_VAL (LCD_DATA_PORT, LCD_DATA4_PIN, BIT_VAL(part, 0));
   toggle_e_pin ();
 
   // send lower bit
   part = data;
-  SETVAL (LCD_DATA_PORT, LCD_DATA7_PIN, BITVAL(part, 3));
-  SETVAL (LCD_DATA_PORT, LCD_DATA6_PIN, BITVAL(part, 2));
-  SETVAL (LCD_DATA_PORT, LCD_DATA5_PIN, BITVAL(part, 1));
-  SETVAL (LCD_DATA_PORT, LCD_DATA4_PIN, BITVAL(part, 0));
+  SET_VAL (LCD_DATA_PORT, LCD_DATA7_PIN, BIT_VAL(part, 3));
+  SET_VAL (LCD_DATA_PORT, LCD_DATA6_PIN, BIT_VAL(part, 2));
+  SET_VAL (LCD_DATA_PORT, LCD_DATA5_PIN, BIT_VAL(part, 1));
+  SET_VAL (LCD_DATA_PORT, LCD_DATA4_PIN, BIT_VAL(part, 0));
   toggle_e_pin ();
 }
 
@@ -220,38 +220,38 @@ uint8_t read_data () {
   // clear_all_data_pin ();
   uint8_t re = 0;
   // set all ports to input
-  CLEARBIT (LCD_DATA_DDR, LCD_DATA7_PIN);
-  CLEARBIT (LCD_DATA_DDR, LCD_DATA6_PIN);
-  CLEARBIT (LCD_DATA_DDR, LCD_DATA5_PIN);
-  CLEARBIT (LCD_DATA_DDR, LCD_DATA4_PIN);
+  CLEAR_BIT (LCD_DATA_DDR, LCD_DATA7_PIN);
+  CLEAR_BIT (LCD_DATA_DDR, LCD_DATA6_PIN);
+  CLEAR_BIT (LCD_DATA_DDR, LCD_DATA5_PIN);
+  CLEAR_BIT (LCD_DATA_DDR, LCD_DATA4_PIN);
 
   //  set_all_data_pin ();
 
   // received higher bit
   output_high (LCD_CTL_PORT, LCD_E_PIN);
   __asm__ ("NOP");
-  re |= BITVAL (LCD_DATA_IN, LCD_DATA7_PIN) << 7;
-  re |= BITVAL (LCD_DATA_IN, LCD_DATA6_PIN) << 6;
-  re |= BITVAL (LCD_DATA_IN, LCD_DATA5_PIN) << 5;
-  re |= BITVAL (LCD_DATA_IN, LCD_DATA4_PIN) << 4;
+  re |= BIT_VAL (LCD_DATA_IN, LCD_DATA7_PIN) << 7;
+  re |= BIT_VAL (LCD_DATA_IN, LCD_DATA6_PIN) << 6;
+  re |= BIT_VAL (LCD_DATA_IN, LCD_DATA5_PIN) << 5;
+  re |= BIT_VAL (LCD_DATA_IN, LCD_DATA4_PIN) << 4;
   output_low (LCD_CTL_PORT, LCD_E_PIN);
   __asm__ ("NOP");
 
   // received lower bit
   output_high (LCD_CTL_PORT, LCD_E_PIN);
   __asm__ ("NOP");
-  re |= BITVAL (LCD_DATA_IN, LCD_DATA7_PIN) << 3;
-  re |= BITVAL (LCD_DATA_IN, LCD_DATA6_PIN) << 2;
-  re |= BITVAL (LCD_DATA_IN, LCD_DATA5_PIN) << 1;
-  re |= BITVAL (LCD_DATA_IN, LCD_DATA4_PIN);
+  re |= BIT_VAL (LCD_DATA_IN, LCD_DATA7_PIN) << 3;
+  re |= BIT_VAL (LCD_DATA_IN, LCD_DATA6_PIN) << 2;
+  re |= BIT_VAL (LCD_DATA_IN, LCD_DATA5_PIN) << 1;
+  re |= BIT_VAL (LCD_DATA_IN, LCD_DATA4_PIN);
   output_low (LCD_CTL_PORT, LCD_E_PIN);
   __asm__ ("NOP");
 
   // set all data ports to output
-  SETBIT (LCD_DATA_DDR, LCD_DATA7_PIN);
-  SETBIT (LCD_DATA_DDR, LCD_DATA6_PIN);
-  SETBIT (LCD_DATA_DDR, LCD_DATA5_PIN);
-  SETBIT (LCD_DATA_DDR, LCD_DATA4_PIN);
+  SET_BIT (LCD_DATA_DDR, LCD_DATA7_PIN);
+  SET_BIT (LCD_DATA_DDR, LCD_DATA6_PIN);
+  SET_BIT (LCD_DATA_DDR, LCD_DATA5_PIN);
+  SET_BIT (LCD_DATA_DDR, LCD_DATA4_PIN);
 
   return re;
 }
@@ -264,22 +264,22 @@ void clear_all_pin () {
 
 void clear_all_data_pin () {
   // clear data pin
-  CLEARBIT(LCD_DATA_PORT, LCD_DATA4_PIN);
-  CLEARBIT(LCD_DATA_PORT, LCD_DATA5_PIN);
-  CLEARBIT(LCD_DATA_PORT, LCD_DATA6_PIN);
-  CLEARBIT(LCD_DATA_PORT, LCD_DATA7_PIN);
+  CLEAR_BIT(LCD_DATA_PORT, LCD_DATA4_PIN);
+  CLEAR_BIT(LCD_DATA_PORT, LCD_DATA5_PIN);
+  CLEAR_BIT(LCD_DATA_PORT, LCD_DATA6_PIN);
+  CLEAR_BIT(LCD_DATA_PORT, LCD_DATA7_PIN);
 }
 
 void set_all_data_pin () {
-  SETBIT(LCD_DATA_PORT, LCD_DATA4_PIN);
-  SETBIT(LCD_DATA_PORT, LCD_DATA5_PIN);
-  SETBIT(LCD_DATA_PORT, LCD_DATA6_PIN);
-  SETBIT(LCD_DATA_PORT, LCD_DATA7_PIN);
+  SET_BIT(LCD_DATA_PORT, LCD_DATA4_PIN);
+  SET_BIT(LCD_DATA_PORT, LCD_DATA5_PIN);
+  SET_BIT(LCD_DATA_PORT, LCD_DATA6_PIN);
+  SET_BIT(LCD_DATA_PORT, LCD_DATA7_PIN);
 }
 
 void clear_all_ctl_pin () {
   // clear control pin
-  CLEARBIT(LCD_CTL_PORT, LCD_RS_PIN);
-  CLEARBIT(LCD_CTL_PORT, LCD_RW_PIN);
-  CLEARBIT(LCD_CTL_PORT, LCD_E_PIN);
+  CLEAR_BIT(LCD_CTL_PORT, LCD_RS_PIN);
+  CLEAR_BIT(LCD_CTL_PORT, LCD_RW_PIN);
+  CLEAR_BIT(LCD_CTL_PORT, LCD_E_PIN);
 }

@@ -37,11 +37,11 @@ void toggle_pin (volatile uint8_t * port, uint8_t pin);
 /*! \def output_high(x,n)
  * Set n pin of port x to output high (require DDRxn is 1);
  */
-#define output_high(x,n) SETBIT(x,n)
+#define output_high(x,n) SET_BIT(x,n)
 
 /*! \def output_low(x,n)
  * Set n pin of port x to output low (require DDRxn is 1);
  */
-#define output_low(x,n) CLEARBIT(x,n)
+#define output_low(x,n) CLEAR_BIT(x,n)
 
 #endif

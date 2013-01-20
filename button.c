@@ -24,11 +24,11 @@
 #include "lcd_hd44780.h"
 
 void wait_until_button_clicked (volatile uint8_t * port_in, uint8_t pin) {
-  while (BITVAL (*port_in, pin) == 1) {
+  while (BIT_VAL (*port_in, pin) == 1) {
     _delay_ms (10);
   }
 
-  while (BITVAL (*port_in, pin) == 0) {
+  while (BIT_VAL (*port_in, pin) == 0) {
     _delay_ms (10);
   }
 }
@@ -36,6 +36,6 @@ void wait_until_button_clicked (volatile uint8_t * port_in, uint8_t pin) {
 inline void attach_button_to (volatile uint8_t * port_ddr,
                               volatile uint8_t * port,
                               uint8_t pin) {
-  CLEARBIT (*port_ddr, pin);
-  SETBIT (*port, pin);
+  CLEAR_BIT (*port_ddr, pin);
+  SET_BIT (*port, pin);
 }

@@ -26,6 +26,7 @@ void init_ADC () {
 }
 
 uint16_t read_ADC(uint8_t ch) {
+  ADMUX &= 0xf0;
   ADMUX |= ch;
   ADCSRA |= (1 << ADSC);
   while (!(ADCSRA & (1 << ADIF)));
